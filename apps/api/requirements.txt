@@ -1,0 +1,46 @@
+# FastAPI and ASGI
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+
+# Database
+sqlalchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+psycopg2-binary==2.9.10
+alembic==1.14.1
+pgvector==0.3.6
+
+# Validation
+pydantic==2.10.4
+pydantic-settings==2.7.1
+email-validator==2.2.0
+
+# Auth
+passlib[bcrypt]==1.7.4
+python-jose[cryptography]==3.3.0
+bcrypt==4.2.1
+
+# Redis and Celery
+redis==5.2.1
+celery==5.4.0
+
+# S3/MinIO
+boto3==1.35.86
+
+# HTTP
+httpx==0.28.1
+
+# Utilities
+python-dateutil==2.9.0
+orjson==3.10.14
+
+# Testing
+pytest==8.3.4
+pytest-asyncio==0.24.0
+pytest-cov==6.0.0
+httpx==0.28.1
+
+# Linting
+ruff==0.8.6
+mypy==1.14.1
+google-genai==0.3.0
