@@ -58,6 +58,8 @@ class TranscriptSegment(UUIDMixin, Base):
     confidence: Mapped[Decimal | None] = mapped_column(default=None)
     source_reference: Mapped[str | None] = mapped_column(String(200))
     embedding = mapped_column(Vector(1536), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), server_default=text("now()"))
+    
+    import sqlalchemy
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), server_default=sqlalchemy.text("now()"))
 
     transcript: Mapped[Transcript] = relationship(back_populates="segments")
