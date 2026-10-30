@@ -125,7 +125,7 @@ function FinancialsTab({ companyId, companyName }: { companyId: string; companyN
   if (isLoading) return <div className="skeleton h-96 rounded-xl" />;
 
   const periods = data?.periods || [];
-  const allMetrics = Array.from(new Set(periods.flatMap((p: any) => p.metrics?.map((m: any) => m.metric_code) || [])));
+  const allMetrics = Array.from(new Set<string>(periods.flatMap((p: any) => p.metrics?.map((m: any) => m.metric_code) || [])));
 
   return (
     <div className="space-y-4">

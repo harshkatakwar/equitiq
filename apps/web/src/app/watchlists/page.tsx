@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Trash2, X, FolderOpen } from 'lucide-react';
 import { watchlistsApi, getAuthToken } from '@/lib/api';
@@ -12,7 +12,15 @@ export default function WatchlistsPage() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  if (!getAuthToken()) { router.push('/login'); return null; }
+
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+    if (!getAuthToken()) router.push('/login');
+  }, [router]);
+
+  if (!mounted || !getAuthToken()) return null;
 
   const { data: watchlists, isLoading } = useQuery({
     queryKey: ['watchlists'],

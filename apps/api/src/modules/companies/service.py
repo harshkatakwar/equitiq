@@ -22,12 +22,17 @@ async def search_companies(
     if query:
         # Combine name similarity + symbol exact/prefix + ISIN exact
         similarity = func.similarity(Company.name, query)
-        base_q = base_q.outerjoin(Security, Security.company_id == Company.id)
+        
+        has_symbol_q = select(Security.id).where(
+            Security.company_id == Company.id,
+            Security.symbol.ilike(f"{query}%")
+        )
+
         base_q = base_q.where(
             or_(
-                func.similarity(Company.name, query) > 0.1,
-                Security.symbol.ilike(f"{query}%"),
+                similarity > 0.1,
                 Company.isin == query.upper(),
+                has_symbol_q.exists(),
             )
         ).order_by(desc(similarity))
     else:
@@ -37,12 +42,12 @@ async def search_companies(
         base_q = base_q.where(Company.sector == sector)
 
     # Count
-    count_q = select(func.count()).select_from(base_q.distinct(Company.id).subquery())
+    count_q = select(func.count()).select_from(base_q.subquery())
     count_result = await db.execute(count_q)
     total = count_result.scalar() or 0
 
     # Results
-    results_q = base_q.distinct(Company.id).limit(limit).offset(offset)
+    results_q = base_q.limit(limit).offset(offset)
     result = await db.execute(results_q)
     companies = list(result.scalars().all())
 

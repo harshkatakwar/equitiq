@@ -1,16 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { Search, TrendingUp, BarChart3, Bell, BookOpen, Sparkles } from 'lucide-react';
 import { companiesApi, concallsApi, announcementsApi, getAuthToken } from '@/lib/api';
 import { CompanySearch } from '@/components/company-search';
 
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'ResearchOS';
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'EquitIQ';
 
 export default function DashboardPage() {
-  const isLoggedIn = !!getAuthToken();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isLoggedIn = mounted ? !!getAuthToken() : false;
 
   const { data: recentConcalls } = useQuery({
     queryKey: ['concalls', 'recent'],

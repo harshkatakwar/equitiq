@@ -1,5 +1,7 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
 import { CreditCard, BarChart2, CheckCircle } from 'lucide-react';
 import { subscriptionApi, getAuthToken } from '@/lib/api';
@@ -7,7 +9,15 @@ import { useRouter } from 'next/navigation';
 
 export default function SubscriptionPage() {
   const router = useRouter();
-  if (!getAuthToken()) { router.push('/login'); return null; }
+
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+    if (!getAuthToken()) router.push('/login');
+  }, [router]);
+
+  if (!mounted || !getAuthToken()) return null;
 
   const { data: subscription } = useQuery({ queryKey: ['subscription'], queryFn: () => subscriptionApi.current() });
   const { data: usage } = useQuery({ queryKey: ['usage'], queryFn: () => subscriptionApi.usage() });

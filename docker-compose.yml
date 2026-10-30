@@ -84,10 +84,8 @@ services:
         condition: service_healthy
       minio-init:
         condition: service_completed_successfully
-    volumes:
-      - ./apps/api:/app
     command: >
-      sh -c "alembic upgrade head && python -m seeds.run && uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload"
+      sh -c "alembic upgrade head && python -m seeds.run && uvicorn src.main:app --host 0.0.0.0 --port 8000"
 
   worker:
     build:
@@ -111,8 +109,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    volumes:
-      - ./apps/api:/app
     command: celery -A src.worker.celery_app worker --loglevel=info --concurrency=2
 
   web:
@@ -126,11 +122,6 @@ services:
       - "3000:3000"
     depends_on:
       - api
-    volumes:
-      - ./apps/web:/app
-      - /app/node_modules
-      - /app/.next
-    command: npm run dev
 
 volumes:
   postgres_data:

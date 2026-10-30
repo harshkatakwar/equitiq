@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, Menu, X, Moon, Sun, User, LogOut } from 'lucide-react';
 import { getAuthToken, setAuthToken } from '@/lib/api';
@@ -11,7 +11,10 @@ const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'ResearchOS';
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dark, setDark] = useState(false);
-  const isLoggedIn = typeof window !== 'undefined' ? !!getAuthToken() : false;
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => setMounted(true), []);
+  const isLoggedIn = mounted ? !!getAuthToken() : false;
 
   const toggleDark = () => {
     setDark(!dark);
