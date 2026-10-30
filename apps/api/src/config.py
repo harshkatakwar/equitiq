@@ -1,6 +1,7 @@
 """ResearchOS API — Configuration module."""
 
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
 from functools import lru_cache
 from typing import Optional
 
@@ -18,6 +19,28 @@ class Settings(BaseSettings):
     # Database
     database_url: str = "postgresql+asyncpg://researchos:researchos_dev@localhost:5432/researchos"
     database_url_sync: str = "postgresql://researchos:researchos_dev@localhost:5432/researchos"
+
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def assemble_async_database_url(cls, v: str) -> str:
+        if not v:
+            return v
+        if v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql+asyncpg://", 1)
+        if v.startswith("postgresql://") and not v.startswith("postgresql+asyncpg://"):
+            return v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return v
+
+    @field_validator("database_url_sync", mode="before")
+    @classmethod
+    def assemble_sync_database_url(cls, v: str) -> str:
+        if not v:
+            return v
+        if v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql://", 1)
+        if v.startswith("postgresql+asyncpg://"):
+            return v.replace("postgresql+asyncpg://", "postgresql://", 1)
+        return v
 
     # Redis
     redis_url: str = "redis://localhost:6379/0"

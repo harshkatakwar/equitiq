@@ -1,14 +1,18 @@
 #!/bin/sh
 set -e
 
-# Rewrite postgres:// → postgresql+asyncpg:// if DATABASE_URL wasn't set directly
-if [ -z "$DATABASE_URL" ] && [ -n "$DATABASE_URL_SYNC" ]; then
+# Ensure DATABASE_URL uses the asyncpg driver (render auto-sets DATABASE_URL with postgres://)
+if [ -n "$DATABASE_URL" ]; then
+  export DATABASE_URL=$(echo "$DATABASE_URL" | sed 's|^postgres://|postgresql+asyncpg://|;s|^postgresql://|postgresql+asyncpg://|')
+elif [ -n "$DATABASE_URL_SYNC" ]; then
   export DATABASE_URL=$(echo "$DATABASE_URL_SYNC" | sed 's|^postgres://|postgresql+asyncpg://|;s|^postgresql://|postgresql+asyncpg://|')
 fi
 
-# Normalize postgres:// → postgresql:// for Alembic / sync SQLAlchemy
+# Ensure DATABASE_URL_SYNC uses standard sync driver for Alembic
 if [ -n "$DATABASE_URL_SYNC" ]; then
-  export DATABASE_URL_SYNC=$(echo "$DATABASE_URL_SYNC" | sed 's|^postgres://|postgresql://|')
+  export DATABASE_URL_SYNC=$(echo "$DATABASE_URL_SYNC" | sed 's|^postgres://|postgresql://|;s|^postgresql+asyncpg://|postgresql://|')
+elif [ -n "$DATABASE_URL" ]; then
+  export DATABASE_URL_SYNC=$(echo "$DATABASE_URL" | sed 's|^postgresql+asyncpg://|postgresql://|')
 fi
 
 echo "Running Alembic migrations..."

@@ -28,8 +28,13 @@ from src.modules.audit.models import AuditEvent
 config = context.config
 
 # Override sqlalchemy.url from environment
-database_url = os.environ.get("DATABASE_URL_SYNC", config.get_main_option("sqlalchemy.url"))
-config.set_main_option("sqlalchemy.url", database_url)
+database_url = os.environ.get("DATABASE_URL_SYNC") or os.environ.get("DATABASE_URL") or config.get_main_option("sqlalchemy.url")
+if database_url:
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+    elif database_url.startswith("postgresql+asyncpg://"):
+        database_url = database_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+    config.set_main_option("sqlalchemy.url", database_url)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
