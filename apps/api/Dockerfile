@@ -12,6 +12,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 8000
 
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# entrypoint.sh runs `alembic upgrade head` then starts uvicorn.
+# PORT is injected by Render at runtime (defaults to 8000 locally).
+CMD ["/app/entrypoint.sh"]

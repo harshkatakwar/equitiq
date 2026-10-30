@@ -48,9 +48,3 @@ services:
         value: "minioadmin"
       - key: S3_BUCKET_NAME
         value: "researchos-documents"
-    startCommand: >-
-      sh -c "
-        export DATABASE_URL=\"${DATABASE_URL_SYNC/postgresql:\/\//postgresql+asyncpg:\/\/}\" &&
-        alembic upgrade head &&
-        uvicorn src.main:app --host 0.0.0.0 --port ${PORT:-8000}
-      "
