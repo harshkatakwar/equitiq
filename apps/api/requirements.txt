@@ -35,7 +35,7 @@ python-dateutil==2.9.0
 orjson==3.10.14
 
 # AI
-google-genai==0.3.0
+google-genai>=1.56.0,<2.0.0
 langchain==1.2.7
 langchain-core==1.2.7
 langchain-google-genai==4.2.0
