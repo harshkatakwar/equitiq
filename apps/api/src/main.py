@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import ORJSONResponse
+from fastapi.responses import ORJSONResponse, RedirectResponse
 
 from src.config import get_settings
 from src.modules.identity.router import router as identity_router
@@ -58,6 +58,12 @@ async def add_request_id(request: Request, call_next):
     response: Response = await call_next(request)
     response.headers["X-Request-ID"] = request_id
     return response
+
+
+# Root redirect to API documentation
+@app.get("/", include_in_schema=False)
+async def root():
+    return RedirectResponse(url="/docs")
 
 
 # Health check
