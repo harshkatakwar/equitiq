@@ -31,7 +31,9 @@ services:
       - key: DATA_MODE
         value: demo
       - key: AI_PROVIDER
-        value: mock
+        value: gemini
+      - key: GEMINI_API_KEY
+        sync: false
       - key: DEBUG
         value: "false"
       - key: CORS_ORIGINS

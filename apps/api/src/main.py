@@ -20,6 +20,7 @@ from src.modules.subscriptions.router import router as subscriptions_router
 from src.modules.administration.router import router as admin_router
 from src.modules.screening.router import router as screening_router
 from src.modules.market_data.router import router as market_data_router
+from src.modules.trader_agent.router import router as trader_agent_router
 
 settings = get_settings()
 
@@ -91,3 +92,4 @@ app.include_router(screening_router, prefix=f"{PREFIX}/screener", tags=["Screene
 app.include_router(ai_router, prefix=f"{PREFIX}/ai", tags=["AI Research"])
 app.include_router(subscriptions_router, prefix=f"{PREFIX}/subscription", tags=["Subscriptions"])
 app.include_router(admin_router, prefix=f"{PREFIX}/admin", tags=["Administration"])
+app.include_router(trader_agent_router, prefix=f"{PREFIX}/agent", tags=["Trading Agent"])

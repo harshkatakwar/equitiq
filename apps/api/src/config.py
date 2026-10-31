@@ -62,11 +62,14 @@ class Settings(BaseSettings):
     demo_user_password: str = "demo123456"
 
     # AI
-    ai_provider: str = "mock"  # mock | openai | gemini
+    ai_provider: str = "gemini"  # mock | openai | gemini
     ai_provider_api_key: Optional[str] = None
     ai_provider_base_url: Optional[str] = None
-    ai_default_model: str = "gemini-2.5-flash"
+    ai_default_model: str = "gemini-1.5-flash"
     ai_embedding_model: str = "text-embedding-004"
+    gemini_api_key: Optional[str] = None
+    google_api_key: Optional[str] = None
+    sec_user_agent: str = "EquitIQResearch research@equitiq.com"
 
     # Rate Limiting
     rate_limit_per_minute: int = 60
@@ -79,7 +82,7 @@ class Settings(BaseSettings):
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",")]
 
-    model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
+    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 
 
 @lru_cache
